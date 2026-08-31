@@ -1,0 +1,456 @@
+<title>Job Hunt, Backstage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Public+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #F5F8F6;
+    --surface: #FFFFFF;
+    --ink: #1B2621;
+    --muted: #5C6B62;
+    --line: #D7E0DA;
+    --accent: #1E7A4F;
+    --accent-soft: rgba(30, 122, 79, 0.10);
+    --stage-bg: #16201B;         /* backstage panels stay dark in both themes */
+    --stage-ink: #DCE7DF;
+    --stage-muted: #91A498;
+    --stage-line: #2B3830;
+    --stage-accent: #5FCB93;
+    --serif: "Spectral", Georgia, serif;
+    --sans: "Public Sans", -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1512;
+      --surface: #161E1A;
+      --ink: #E3ECE6;
+      --muted: #94A79B;
+      --line: #28332C;
+      --accent: #54C08A;
+      --accent-soft: rgba(84, 192, 138, 0.12);
+      --stage-bg: #0A0F0C;
+      --stage-line: #232E27;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1512;
+    --surface: #161E1A;
+    --ink: #E3ECE6;
+    --muted: #94A79B;
+    --line: #28332C;
+    --accent: #54C08A;
+    --accent-soft: rgba(84, 192, 138, 0.12);
+    --stage-bg: #0A0F0C;
+    --stage-line: #232E27;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 56px 24px 80px; }
+
+  /* ---------- hero ---------- */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(34px, 5.5vw, 52px);
+    line-height: 1.1;
+    margin: 10px 0 18px;
+    text-wrap: balance;
+  }
+  .lede {
+    max-width: 62ch;
+    font-size: 17.5px;
+    color: var(--muted);
+    margin: 0 0 28px;
+  }
+  .lede strong { color: var(--ink); font-weight: 600; }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    margin-bottom: 40px;
+  }
+  .legend span {
+    font-family: var(--mono); font-size: 12.5px;
+    padding: 7px 14px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--surface);
+  }
+  .legend .back-chip {
+    background: var(--stage-bg); color: var(--stage-ink); border-color: var(--stage-line);
+  }
+  .legend b { font-weight: 500; }
+
+  /* ---------- diagram ---------- */
+  figure.map {
+    margin: 0 0 64px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 26px 20px 14px;
+    overflow-x: auto;
+  }
+  figure.map svg { max-width: 100%; height: auto; display: block; margin: 0 auto; min-width: 640px; }
+  figure.map figcaption {
+    font-size: 14px; color: var(--muted);
+    max-width: 70ch; margin: 14px auto 6px; text-align: center;
+  }
+  .nlabel { font-family: var(--mono); font-size: 12.5px; font-weight: 500; fill: currentColor; }
+  .nsub   { font-family: var(--mono); font-size: 10.5px; fill: currentColor; fill-opacity: 0.6; }
+  .nbox   { fill: none; stroke: currentColor; stroke-width: 1.1; }
+  .edge   { stroke: currentColor; stroke-width: 1.1; fill: none; }
+
+  /* ---------- steps ---------- */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 0 20px;
+    position: relative;
+    padding-bottom: 44px;
+  }
+  .step::before {           /* spine */
+    content: "";
+    position: absolute;
+    left: 27px; top: 56px; bottom: 0;
+    width: 2px;
+    background: var(--line);
+  }
+  .step:last-child::before { display: none; }
+  .num {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface);
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--serif); font-size: 24px; font-weight: 600;
+    position: relative; z-index: 1;
+  }
+  .step h2 {
+    font-family: var(--serif); font-weight: 600;
+    font-size: 25px; line-height: 1.25;
+    margin: 12px 0 14px;
+    text-wrap: balance;
+  }
+  .lanes {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 14px;
+  }
+  .front, .back { border-radius: 12px; padding: 18px 20px; }
+  .front {
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .back {
+    background: var(--stage-bg);
+    border: 1px solid var(--stage-line);
+    color: var(--stage-ink);
+  }
+  .lane-tag {
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    letter-spacing: 0.13em; text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+  .front .lane-tag { color: var(--accent); }
+  .back  .lane-tag { color: var(--stage-accent); }
+  .front p, .back p { margin: 0 0 10px; font-size: 15px; }
+  .front p:last-child, .back p:last-child { margin-bottom: 0; }
+  .back p { color: var(--stage-ink); line-height: 1.62; }
+  .back .why { color: var(--stage-muted); }
+  .term {
+    font-family: var(--mono); font-size: 0.92em;
+    color: var(--stage-accent);
+  }
+  .front .term { color: var(--accent); }
+
+  /* ---------- closing rules strip ---------- */
+  .rules {
+    margin-top: 20px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 14px;
+    padding: 26px 28px;
+  }
+  .rules h2 {
+    font-family: var(--serif); font-size: 24px; font-weight: 600; margin: 0 0 12px;
+  }
+  .rules ul { margin: 0; padding-left: 20px; }
+  .rules li { margin-bottom: 8px; font-size: 15.5px; }
+  .rules li:last-child { margin-bottom: 0; }
+
+  footer {
+    margin-top: 36px;
+    font-family: var(--mono); font-size: 12.5px; color: var(--muted);
+    text-align: center;
+  }
+
+  @media (max-width: 720px) {
+    .lanes { grid-template-columns: 1fr; }
+    .step { grid-template-columns: 44px 1fr; gap: 0 14px; }
+    .num { width: 44px; height: 44px; font-size: 19px; }
+    .step::before { left: 21px; top: 44px; }
+  }
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">Claude skill · job-hunt · a guided tour</p>
+  <h1>Job Hunt, Backstage</h1>
+  <p class="lede">You hand over a CV; twenty-odd minutes later you get a spreadsheet of real, open, scored job opportunities. This page walks through each step twice: <strong>what you see</strong> on stage, and <strong>what the machinery does</strong> behind the curtain — in plain terms.</p>
+
+  <div class="legend">
+    <span><b>On stage</b> — what you do &amp; see</span>
+    <span class="back-chip"><b>Backstage</b> — what the skill actually does</span>
+  </div>
+
+  <figure class="map">
+    <svg viewBox="0 0 960 450" role="img" aria-label="Pipeline: your CV goes through intake, profile expansion, and source pre-flight into a fleet of six parallel search channels, whose findings are verified and scored, adversarially audited, and delivered as a workbook. Search loops until dry, and reruns skip everything already delivered.">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+      </defs>
+
+      <!-- top row -->
+      <rect class="nbox" x="30" y="40" width="130" height="52" rx="8"/>
+      <text class="nlabel" x="95" y="63" text-anchor="middle">Your CV</text>
+      <text class="nsub" x="95" y="80" text-anchor="middle">or LinkedIn</text>
+
+      <rect class="nbox" x="200" y="40" width="160" height="52" rx="8"/>
+      <text class="nlabel" x="280" y="63" text-anchor="middle">Intake</text>
+      <text class="nsub" x="280" y="80" text-anchor="middle">a few questions</text>
+
+      <rect class="nbox" x="400" y="40" width="180" height="52" rx="8"/>
+      <text class="nlabel" x="490" y="63" text-anchor="middle">Profile expansion</text>
+      <text class="nsub" x="490" y="80" text-anchor="middle">~40 title variants</text>
+
+      <rect class="nbox" x="620" y="40" width="180" height="52" rx="8"/>
+      <text class="nlabel" x="710" y="63" text-anchor="middle">Source pre-flight</text>
+      <text class="nsub" x="710" y="80" text-anchor="middle">test before searching</text>
+
+      <line class="edge" x1="160" y1="66" x2="194" y2="66" marker-end="url(#arr)"/>
+      <line class="edge" x1="360" y1="66" x2="394" y2="66" marker-end="url(#arr)"/>
+      <line class="edge" x1="580" y1="66" x2="614" y2="66" marker-end="url(#arr)"/>
+      <line class="edge" x1="710" y1="92" x2="710" y2="144" marker-end="url(#arr)"/>
+
+      <!-- fleet -->
+      <rect class="nbox" x="150" y="150" width="660" height="160" rx="10"/>
+      <text class="nlabel" x="480" y="177" text-anchor="middle">Search fleet — six channels in parallel</text>
+
+      <rect class="nbox" x="170" y="192" width="196" height="34" rx="17" stroke-opacity="0.55"/>
+      <text class="nsub" x="268" y="213" text-anchor="middle" fill-opacity="0.85">job-site connectors</text>
+      <rect class="nbox" x="382" y="192" width="196" height="34" rx="17" stroke-opacity="0.55"/>
+      <text class="nsub" x="480" y="213" text-anchor="middle" fill-opacity="0.85">company career pages</text>
+      <rect class="nbox" x="594" y="192" width="196" height="34" rx="17" stroke-opacity="0.55"/>
+      <text class="nsub" x="692" y="213" text-anchor="middle" fill-opacity="0.85">remote job boards</text>
+      <rect class="nbox" x="170" y="238" width="196" height="34" rx="17" stroke-opacity="0.55"/>
+      <text class="nsub" x="268" y="259" text-anchor="middle" fill-opacity="0.85">community &amp; VC boards</text>
+      <rect class="nbox" x="382" y="238" width="196" height="34" rx="17" stroke-opacity="0.55"/>
+      <text class="nsub" x="480" y="259" text-anchor="middle" fill-opacity="0.85">LinkedIn (logged in)</text>
+      <rect class="nbox" x="594" y="238" width="196" height="34" rx="17" stroke-opacity="0.55"/>
+      <text class="nsub" x="692" y="259" text-anchor="middle" fill-opacity="0.85">adjacent-title roamer</text>
+
+      <line class="edge" x1="480" y1="310" x2="480" y2="364" marker-end="url(#arr)"/>
+
+      <!-- bottom row -->
+      <rect x="150" y="370" width="210" height="56" rx="8" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+      <text class="nlabel" x="255" y="393" text-anchor="middle">Verify &amp; score</text>
+      <text class="nsub" x="255" y="411" text-anchor="middle" fill="var(--accent)" fill-opacity="0.95">on the employer's site</text>
+
+      <rect class="nbox" x="420" y="370" width="200" height="56" rx="8"/>
+      <text class="nlabel" x="520" y="393" text-anchor="middle">Adversarial audit</text>
+      <text class="nsub" x="520" y="411" text-anchor="middle">skeptics try to refute</text>
+
+      <rect x="680" y="370" width="200" height="56" rx="8" fill="var(--accent)" fill-opacity="0.09" stroke="var(--accent)" stroke-width="1.5"/>
+      <text class="nlabel" x="780" y="393" text-anchor="middle">Your workbook</text>
+      <text class="nsub" x="780" y="411" text-anchor="middle">.xlsx + short brief</text>
+
+      <line class="edge" x1="360" y1="398" x2="414" y2="398" marker-end="url(#arr)"/>
+      <line class="edge" x1="620" y1="398" x2="674" y2="398" marker-end="url(#arr)"/>
+
+      <!-- loop until dry -->
+      <path class="edge" d="M150,398 C 84,398 84,230 142,230" marker-end="url(#arr)"/>
+      <text class="nsub" x="70" y="322" transform="rotate(-90 70 322)" text-anchor="middle">loop until dry</text>
+
+      <!-- delta rerun -->
+      <path class="edge" d="M880,398 C 942,398 942,230 818,230" stroke-dasharray="5 5" marker-end="url(#arr)"/>
+      <text class="nsub" x="938" y="316" transform="rotate(90 938 316)" text-anchor="middle">rerun: new roles only</text>
+    </svg>
+    <figcaption>The full run. Search passes repeat until they stop finding new roles ("loop until dry"); the finished workbook doubles as memory, so a rerun only surfaces what's new since last time.</figcaption>
+  </figure>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="num">1</div>
+      <div>
+        <h2>You share your CV and answer a short form</h2>
+        <div class="lanes">
+          <div class="front">
+            <p class="lane-tag">On stage</p>
+            <p>Attach your resume (or a LinkedIn URL) and answer up to four quick questions: where you want to work, what to exclude (internships, night shifts, commission-only…), and which job boards you're willing to log into.</p>
+            <p>That login question comes <em>now</em>, on purpose — logged-in boards like LinkedIn are some of the richest sources, and asking upfront means none of them are dead ends later.</p>
+          </div>
+          <div class="back">
+            <p class="lane-tag">Backstage</p>
+            <p>The CV is parsed into structured facts: years of experience per skill, education, languages, and — crucially — your exact <span class="term">city and state</span> plus work-authorisation status. Many "remote" jobs are only open to certain states or countries, and this is what makes those checks possible later.</p>
+            <p class="why">It also opens a <span class="term">run manifest</span> — a flight recorder that every following step writes into, so the final report can honestly say what was searched, what wasn't, and why.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">2</div>
+      <div>
+        <h2>Your profile becomes ~40 job titles — not just one</h2>
+        <div class="lanes">
+          <div class="front">
+            <p class="lane-tag">On stage</p>
+            <p>A progress checklist appears and starts ticking. Nothing is needed from you here.</p>
+            <p>The best find of a run usually comes from this step: a great role hiding under a title you'd never have typed into a search box.</p>
+          </div>
+          <div class="back">
+            <p class="lane-tag">Backstage</p>
+            <p>The skill detects your <span class="term">profession archetype</span> (product-tech, healthcare, NGO…) and loads a matching playbook of boards and employers. Then it expands your title three ways: direct matches, adjacent titles ("what is this job called at a company 10× smaller? which other department owns this work?"), and stretch roles — plus searches by <span class="term">requirement text</span>, not just titles, to catch mislabeled roles.</p>
+            <p class="why">It also samples ~25 live postings and measures the real years-of-experience bar for your market — so "within reach" vs "a stretch" is based on data, not a guess.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">3</div>
+      <div>
+        <h2>Every source is tested before it's trusted</h2>
+        <div class="lanes">
+          <div class="front">
+            <p class="lane-tag">On stage</p>
+            <p>You might get one more question: "board X needs a login — open it in Chrome?" or "connect Y, or proceed without?" Answer it once and the run continues.</p>
+          </div>
+          <div class="back">
+            <p class="lane-tag">Backstage</p>
+            <p>Before any real searching, the skill fires <em>one test query</em> at every job-site connection and board and records the result: works, blocked in your country, needs a login, or unreachable. Dead sources are dropped so no searcher wastes time discovering the same failure three times.</p>
+            <p class="why">It also builds a target list of 150–300 companies likely to be hiring you — prolific hirers in your field, recently funded companies in your domains, and any employer you flagged as interesting.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">4</div>
+      <div>
+        <h2>A fleet of searchers fans out — and loops until dry</h2>
+        <div class="lanes">
+          <div class="front">
+            <p class="lane-tag">On stage</p>
+            <p>This is the long stretch — 15–25 minutes of the checklist ticking as parallel searches run.</p>
+          </div>
+          <div class="back">
+            <p class="lane-tag">Backstage</p>
+            <p>Six searcher agents run at once, each owning a different <em>channel</em>: job-site connections, remote boards, community and investor job boards, a logged-in browser sweep of LinkedIn, a creative "roamer" chasing the adjacent titles — and the star channel: polling <span class="term">company career pages directly</span>. One visit to a company's own careers page reveals <em>everything</em> it has open; in real runs this channel produced 4× more top-tier finds per lookup than any job aggregator.</p>
+            <p class="why">When a pass finds plenty, another pass runs with those results excluded — repeating until two passes in a row come up nearly empty. One pass is never enough.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">5</div>
+      <div>
+        <h2>Every role is checked at the source, then scored</h2>
+        <div class="lanes">
+          <div class="front">
+            <p class="lane-tag">On stage</p>
+            <p>Invisible to you — but it's why every link in your spreadsheet works and every "apply now" is genuinely open. No role is ever invented; anything unknown says <span class="term">"not listed"</span>.</p>
+          </div>
+          <div class="back">
+            <p class="lane-tag">Backstage</p>
+            <p>A role only counts if it was seen on the <span class="term">employer's own website</span> — not just a copy on some aggregator, which real runs showed are wrong shockingly often. Each row carries an <span class="term">authenticity grade (A–X)</span> saying exactly how it was confirmed. Duplicates are merged (the same job on three boards is one row).</p>
+            <p class="why">Then two separate scores: <b>Fit</b> (does the work match you?) and <b>Attainability</b> (will you actually get it — seniority bar, location rules, hard requirements?). A <span class="term">ghost-job check</span> flags postings that are technically live but probably not real hiring: reposted five times, thousands of applicants, vague evergreen wording.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">6</div>
+      <div>
+        <h2>A skeptic tries to knock out the winners</h2>
+        <div class="lanes">
+          <div class="front">
+            <p class="lane-tag">On stage</p>
+            <p>Nothing visible — this is pure quality control. What survives this step is what you see as a "top pick".</p>
+          </div>
+          <div class="back">
+            <p class="lane-tag">Backstage</p>
+            <p>Fresh agents are briefed with one job: <em>prove the top picks wrong</em>. They re-open every would-be "apply now" row and try to show it's expired, closed to your state or country, missing a required licence or language, or attributed to the wrong company. In early runs this audit corrected 63% of aggregator-sourced rows — which is why it's never skipped.</p>
+            <p class="why">If fewer than five roles survive as "apply now", the skill says so, diagnoses why, and runs one targeted extra pass — it never quietly delivers a thin list.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">7</div>
+      <div>
+        <h2>You get the workbook — and a four-paragraph brief</h2>
+        <div class="lanes">
+          <div class="front">
+            <p class="lane-tag">On stage</p>
+            <p>An Excel workbook lands: <b>All Roles</b> (scored, graded, deduped), <b>Top Picks &amp; Deadlines</b>, <b>Leads</b> to check manually, <b>CV keyword gaps</b>, and a <b>Coverage Report</b>. Every row has a next action: apply, confirm it's still open, or ask the recruiter about location.</p>
+            <p>The brief on top: headline counts, 5–8 standouts with one-line reasons, deadlines in the next 14 days, and what needs you.</p>
+          </div>
+          <div class="back">
+            <p class="lane-tag">Backstage</p>
+            <p>The <span class="term">Coverage Report</span> is the honesty page: every source it tried, what it yielded, and what it <em>couldn't</em> search (login walls, blocked sites) — which is exactly the list you can fix before the next run. The <span class="term">keyword-gap list</span> comes from comparing your CV against the actual text of every posting fetched: the terms employers keep asking for that your CV doesn't say.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">8</div>
+      <div>
+        <h2>Run it again — see only what's new</h2>
+        <div class="lanes">
+          <div class="front">
+            <p class="lane-tag">On stage</p>
+            <p>Say "new roles since last time" — or schedule it daily or weekly. You get only fresh rows, and your existing shortlist is kept honest: expired roles get marked, not silently left as dead links.</p>
+          </div>
+          <div class="back">
+            <p class="lane-tag">Backstage</p>
+            <p>The workbook doubles as the skill's <span class="term">memory</span>. A rerun loads it, excludes everything already delivered, re-checks your active "apply now" rows, and polls the company list first — the cheapest, freshest channel, since prolific hirers change weekly.</p>
+            <p class="why">The system learns: a source that yields nothing three runs in a row gets demoted; one that produced an apply-now role gets checked more often. Each run is cheaper than the last.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="rules">
+    <h2>Four rules it will not break</h2>
+    <ul>
+      <li><b>Never invents.</b> No role, salary, deadline, or link is ever made up — unknown fields say "not listed".</li>
+      <li><b>Verified at the source.</b> Every "apply now" row was confirmed on the employer's own website, twice.</li>
+      <li><b>No padding.</b> A longer list comes from searching more channels — never from including expired, ineligible, or ghost postings.</li>
+      <li><b>Honest about gaps.</b> What couldn't be searched, and why, is reported — not hidden.</li>
+    </ul>
+  </div>
+
+  <footer>job-hunt · a Claude Code skill · github.com/koushikeverything/job-hunt-skill</footer>
+</div>
